@@ -7,6 +7,8 @@ class Complaint(Base):
     __tablename__ = "complaints"
 
     id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=True)
+    location = Column(String, nullable=True)
     title = Column(String, nullable=False)
     original_message = Column(Text, nullable=False)
     # primerno Voda, tok, safety, sustoqnie na ulitsata, bokluk

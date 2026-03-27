@@ -5,6 +5,8 @@ from typing import Optional
 
 class ComplaintListResponse(BaseModel):
     id: int
+    name: Optional[str] = None
+    location: Optional[str] = None
     title: str
     category: str
     priority: str

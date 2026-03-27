@@ -87,6 +87,8 @@ def process_signal_logic(text: str) -> dict:
 
 @app.post("/complaints/upload")
 def upload_complaint(
+    name: Optional[str] = Form(None),
+    location: Optional[str] = Form(None),
     original_text: Optional[str] = Form(None),
     audio_file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
@@ -121,6 +123,8 @@ def upload_complaint(
     ai_data = process_signal_logic(processed_text)
 
     new_complaint = models.Complaint(
+        name=name,
+        location=location,
         title=ai_data["title"],
         original_message=processed_text,
         formal_message=ai_data["formal_message"],
@@ -139,6 +143,8 @@ def upload_complaint(
         "recognised_text": processed_text,
         "complaint_id": new_complaint.id,
         "generated_data": {
+            "name": new_complaint.name,
+            "location": new_complaint.location,
             "title": new_complaint.title,
             "category": new_complaint.category,
             "priority": new_complaint.priority,
