@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from openai import OpenAI
+from groq import Groq
 from dotenv import load_dotenv
-import uvicorn
 import shutil
+import uuid
 import os
 
 from app.database import engine, SessionLocal, Base
@@ -12,8 +12,8 @@ from app import models, schemas
 
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-print("OPENAI_API_KEY loaded:", bool(os.getenv("OPENAI_API_KEY")))
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+print("GROQ_API_KEY loaded:", bool(os.getenv("GROQ_API_KEY")))
 
 Base.metadata.create_all(bind=engine)
 
@@ -28,15 +28,16 @@ def get_db():
         db.close()
 
 
-UPLOAD_DIR = "uploaded_audio"
+UPLOAD_DIR = os.getenv("UPLOAD_DIR", os.path.join(
+    os.path.dirname(__file__), "uploaded_audio"))
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 def transcribe_audio(audio_path: str) -> Optional[str]:
     try:
         with open(audio_path, "rb") as audio_file:
-            transcript = client.audio.transcriptions.create(
-                model="gpt-4o-mini-transcribe",
+            transcript = groq_client.audio.transcriptions.create(
+                model="whisper-large-v3",
                 file=audio_file
             )
         return transcript.text
@@ -46,8 +47,6 @@ def transcribe_audio(audio_path: str) -> Optional[str]:
 
 
 def process_signal_logic(text: str) -> dict:
-    # AI posle
-
     text_lower = text.lower()
     category = "Others"
     priority = "Low"
@@ -59,7 +58,7 @@ def process_signal_logic(text: str) -> dict:
         title = "Проблем с пътната настилка"
     elif "боклук" in text_lower or "смет" in text_lower or "кофа" in text_lower:
         category = "Garbage"
-        priority = "Low "
+        priority = "Low"
         title = "Проблем с боклука"
     elif "вода" in text_lower or "тръба" in text_lower or "теч" in text_lower:
         category = "Water"
@@ -96,16 +95,22 @@ def upload_complaint(
     audio_path = None
 
     if audio_file:
-        file_location = os.path.join(UPLOAD_DIR, audio_file.filename)
+        safe_filename = f"{uuid.uuid4()}_{audio_file.filename}"
+        file_location = os.path.join(UPLOAD_DIR, safe_filename)
+
         with open(file_location, "wb+") as file_object:
             shutil.copyfileobj(audio_file.file, file_object)
         audio_path = file_location
 
         if not processed_text:
-            raise HTTPException(
-                status_code=500,
-                detail="Неуспешно разпознаване на аудио."
-            )
+            processed_text = transcribe_audio(file_location)
+
+            if not processed_text:
+                os.remove(file_location)
+                raise HTTPException(
+                    status_code=500,
+                    detail="Неуспешно разпознаване на аудио."
+                )
 
     if not processed_text:
         raise HTTPException(
@@ -182,7 +187,3 @@ def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depe
         "id": complaint.id,
         "new_status": complaint.status
     }
-
-
-if __name__ == '__main__':
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
