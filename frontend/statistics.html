@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Village Box — Статистики</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Smart<span>Village</span>Box <span style="color:var(--border2)">/ statistics</span></div>
+  <div class="topbar-sep"></div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-label">Навигация</div>
+    <a href="admin_panel.html" class="sidebar-item">Сигнали</a>
+    <a href="statistics.html" class="sidebar-item active">Статистики</a>
+    <a href="settings.html" class="sidebar-item">Настройки</a>
+  </aside>
+
+  <main class="main">
+    <h2>Обобщени данни</h2>
+    <canvas id="statusChart" width="400" height="200"></canvas>
+  </main>
+</div>
+
+<script>
+async function loadStats() {
+  const res = await fetch('[127.0.0.1](http://127.0.0.1:8000/complaints)');
+  const complaints = await res.json();
+
+  const stats = {
+    'New': complaints.filter(c=>c.status==='New').length,
+    'Reviewed': complaints.filter(c=>c.status==='Reviewed').length,
+    'In Progress': complaints.filter(c=>c.status==='In Progress').length,
+    'Resolved': complaints.filter(c=>c.status==='Resolved').length
+  };
+
+  new Chart(document.getElementById('statusChart'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(stats),
+      datasets: [{
+        label: 'Брой сигнали по статус',
+        data: Object.values(stats),
+        backgroundColor: ['#4f8eff','#f0c040','#e07a30','#2ecc71']
+      }]
+    },
+    options: { scales: { y: { beginAtZero:true } } }
+  });
+}
+
+loadStats();
+</script>
+
+</body>
+</html>

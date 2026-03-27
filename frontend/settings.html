@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Village Box — Настройки</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-logo">Smart<span>Village</span>Box <span style="color:var(--border2)">/ settings</span></div>
+  <div class="topbar-sep"></div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-label">Навигация</div>
+    <a href="admin_panel.html" class="sidebar-item">Сигнали</a>
+    <a href="statistics.html" class="sidebar-item">Статистики</a>
+    <a href="settings.html" class="sidebar-item active">Настройки</a>
+  </aside>
+
+  <main class="main">
+    <h2 style="margin-bottom:16px;">Основни настройки</h2>
+    <div class="panel-text">Тук можеш да редактираш конфигурации на системата Smart Village Box.</div>
+
+    <div class="panel-section">
+      <div class="panel-section-label">API адрес</div>
+      <input type="text" value="[127.0.0.1](http://127.0.0.1:8000)" class="sidebar-api-input" />
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-label">Езици</div>
+      <select class="sidebar-api-input">
+        <option selected>Български</option>
+        <option>English</option>
+      </select>
+    </div>
+
+    <button class="save-btn" style="margin-top:20px;">Запази настройките</button>
+  </main>
+</div>
+</body>
+</html>
