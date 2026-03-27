@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аналитика — Smart Village Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  .main { max-width: 1200px; margin: 0 auto 60px; }
+
+  /* KPI карти */
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
+
+  .kpi-card {
+    background: white; border-radius: 14px; border: 1px solid var(--border);
+    padding: 22px 24px; box-shadow: var(--card-shadow);
+  }
+  .kpi-icon { font-size: 22px; margin-bottom: 10px; }
+  .kpi-val  { font-family: 'Sora', sans-serif; font-size: 30px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .kpi-val.green { color: var(--green); }
+  .kpi-val.blue  { color: var(--blue); }
+  .kpi-val.red   { color: var(--red); }
+  .kpi-label { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
+  .kpi-delta { font-size: 11.5px; font-weight: 600; margin-top: 4px; }
+  .kpi-delta.up   { color: var(--green); }
+  .kpi-delta.down { color: var(--red); }
+
+  /* Графики */
+  .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .charts-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .chart-card {
+    background: white; border-radius: 14px; border: 1px solid var(--border);
+    padding: 24px 28px; box-shadow: var(--card-shadow);
+  }
+  .chart-title {
+    font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700;
+    color: var(--navy); margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .chart-period {
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    background: var(--cream); border-radius: 6px; padding: 3px 10px;
+  }
+  .chart-wrap { position: relative; }
+
+  /* Таблица топ категории */
+  .cat-table { width: 100%; border-collapse: collapse; }
+  .cat-table th {
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    letter-spacing: 0.07em; text-transform: uppercase;
+    padding: 0 0 12px; text-align: left;
+  }
+  .cat-table td { padding: 10px 0; border-top: 1px solid var(--border); font-size: 13.5px; }
+  .cat-table td:last-child { text-align: right; }
+
+  .cat-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .cat-bar-bg  { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .cat-bar-fill{ height: 100%; border-radius: 3px; background: var(--blue); }
+
+  .cat-count { font-family: 'Sora', sans-serif; font-weight: 700; color: var(--navy); min-width: 28px; text-align: right; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ══ НАВ ══ -->
+  <nav>
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo">📡</div>
+      <div>
+        <div class="nav-brand-text">Smart Village Box</div>
+        <div class="nav-brand-sub">Граждански сигнали</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Начало</a></li>
+      <li>
+        <a href="signals-new.html">Сигнали <span class="chevron">▾</span></a>
+        <div class="dropdown">
+          <a href="signals-new.html">Нови сигнали</a>
+          <a href="signals-archive.html">Архив</a>
+        </div>
+      </li>
+      <li><a href="analytics.html" class="active">Аналитика</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="signals-new.html" class="btn-ghost">🔔</a>
+      <a href="signals-new.html" class="btn-primary">+ Нов сигнал</a>
+      <a href="profile.html" class="nav-avatar" title="Профил">ИВ</a>
+    </div>
+  </nav>
+
+  <!-- ══ ХЕДЪР ══ -->
+  <div class="page-header">
+    <div class="page-header-label">Аналитика</div>
+    <h1>Статистики и графики</h1>
+    <p>Преглед на активността на системата — сигнали, категории, времена за реакция.</p>
+  </div>
+
+  <div class="main">
+
+    <!-- KPI -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-icon">📋</div>
+        <div class="kpi-val">154</div>
+        <div class="kpi-label">Общо сигнали</div>
+        <div class="kpi-delta up">↑ +12 тази седмица</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-val green">147</div>
+        <div class="kpi-label">Решени</div>
+        <div class="kpi-delta up">↑ 95.4% успеваемост</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">⏱️</div>
+        <div class="kpi-val blue">1.8ч</div>
+        <div class="kpi-label">Средна реакция</div>
+        <div class="kpi-delta up">↓ подобрение vs минал месец</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🚨</div>
+        <div class="kpi-val red">7</div>
+        <div class="kpi-label">Активни сигнала</div>
+        <div class="kpi-delta down">↑ +3 спрямо вчера</div>
+      </div>
+    </div>
+
+    <!-- Основни графики -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">
+          Сигнали по месеци
+          <span class="chart-period">Последни 6 месеца</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartMonthly" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">По категории</div>
+        <div class="chart-wrap">
+          <canvas id="chartCategory" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-row-2">
+      <div class="chart-card">
+        <div class="chart-title">
+          Топ категории
+          <span class="chart-period">Всички времена</span>
+        </div>
+        <table class="cat-table">
+          <thead>
+            <tr>
+              <th>Категория</th>
+              <th></th>
+              <th>Брой</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🛣️ Пътища</td>
+              <td><div class="cat-bar-wrap"><div class="cat-bar-bg"><div class="cat-bar-fill" style="width:82%;background:#1e4db7;"></div></div></div></td>
+              <td><span class="cat-count">41</span></td>
+            </tr>
+            <tr>
+              <td>💡 Инфраструктура</td>
+              <td><div class="cat-bar-wrap"><div class="cat-bar-bg"><div class="cat-bar-fill" style="width:64%;background:#3b82f6;"></div></div></div></td>
+              <td><span class="cat-count">32</span></td>
+            </tr>
+            <tr>
+              <td>💧 Водоснабдяване</td>
+              <td><div class="cat-bar-wrap"><div class="cat-bar-bg"><div class="cat-bar-fill" style="width:50%;background:#0ea5e9;"></div></div></div></td>
+              <td><span class="cat-count">25</span></td>
+            </tr>
+            <tr>
+              <td>🌿 Екология</td>
+              <td><div class="cat-bar-wrap"><div class="cat-bar-bg"><div class="cat-bar-fill" style="width:38%;background:#10b981;"></div></div></div></td>
+              <td><span class="cat-count">19</span></td>
+            </tr>
+            <tr>
+              <td>🔒 Безопасност</td>
+              <td><div class="cat-bar-wrap"><div class="cat-bar-bg"><div class="cat-bar-fill" style="width:24%;background:#f59e0b;"></div></div></div></td>
+              <td><span class="cat-count">12</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          Реакция по ден
+          <span class="chart-period">Тази седмица</span>
+        </div>
+        <canvas id="chartResponse" height="200"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">📡</div>
+        <span class="footer-logo-text">Smart Village Box</span>
+      </div>
+      <p>Интелигентна система за граждански сигнали, създадена за малки общини и села. Разработена в рамките на HACK TUES 12.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Навигация</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Начало</a></li>
+        <li><a href="signals-new.html">Нови сигнали</a></li>
+        <li><a href="signals-archive.html">Архив</a></li>
+        <li><a href="analytics.html">Аналитика</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Помощ</div>
+      <ul class="footer-links">
+        <li><a href="faq.html">Инструкции за употреба</a></li>
+        <li><a href="faq.html">Често задавани въпроси</a></li>
+        <li><a href="faq.html">Как работи системата</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Контакти</div>
+      <ul class="footer-links">
+        <li><a href="contacts.html">📧 info@smartvillagebox.bg</a></li>
+        <li><a href="contacts.html">📞 0800 123 456</a></li>
+        <li><a href="contacts.html">Свържи се с нас</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span><strong>Smart Village Box</strong> · Граждански сигнали за малки населени места</span>
+    <span>HACK TUES 12 · 2025</span>
+  </div>
+</footer>
+
+<script>
+const navy = '#0f1f3d', blue = '#1e4db7', sky = '#3b82f6', green = '#10b981', red = '#ef4444', muted = '#6b7a99', border = '#e2e8f4';
+
+// Линейна графика — месечни сигнали
+new Chart(document.getElementById('chartMonthly'), {
+  type: 'line',
+  data: {
+    labels: ['Окт', 'Ноем', 'Дек', 'Ян', 'Фев', 'Март'],
+    datasets: [{
+      label: 'Нови сигнали',
+      data: [18, 24, 15, 29, 22, 31],
+      borderColor: blue, backgroundColor: 'rgba(30,77,183,0.08)',
+      borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: blue,
+      fill: true, tension: 0.4
+    },{
+      label: 'Решени',
+      data: [17, 23, 14, 27, 21, 29],
+      borderColor: green, backgroundColor: 'rgba(16,185,129,0.05)',
+      borderWidth: 2, pointRadius: 3, pointBackgroundColor: green,
+      fill: true, tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { labels: { font: { family: 'DM Sans' }, boxWidth: 12, padding: 16 }}},
+    scales: {
+      x: { grid: { color: border }, ticks: { font: { family: 'DM Sans', size: 12 }, color: muted }},
+      y: { grid: { color: border }, ticks: { font: { family: 'DM Sans', size: 12 }, color: muted }, beginAtZero: true }
+    }
+  }
+});
+
+// Кръгова — категории
+new Chart(document.getElementById('chartCategory'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Пътища', 'Инфраструктура', 'Водоснабдяване', 'Екология', 'Безопасност'],
+    datasets: [{
+      data: [41, 32, 25, 19, 12],
+      backgroundColor: [navy, blue, sky, green, '#f59e0b'],
+      borderWidth: 0, hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 12 }, boxWidth: 12, padding: 12 }}
+    }
+  }
+});
+
+// Bar — реакция по ден
+new Chart(document.getElementById('chartResponse'), {
+  type: 'bar',
+  data: {
+    labels: ['Пон', 'Вт', 'Ср', 'Чет', 'Пет', 'Съб', 'Нед'],
+    datasets: [{
+      label: 'Часове реакция',
+      data: [1.2, 2.1, 0.8, 1.5, 2.8, 3.2, 1.1],
+      backgroundColor: 'rgba(30,77,183,0.75)', borderRadius: 6, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { display: false }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 12 }, color: muted }},
+      y: { grid: { color: border }, ticks: { font: { family: 'DM Sans', size: 12 }, color: muted, callback: v => v + 'ч' }, beginAtZero: true }
+    }
+  }
+});
+</script>
+</body>
+</html>

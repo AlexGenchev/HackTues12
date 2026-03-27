@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ & Инструкции — Smart Village Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .main { max-width: 900px; margin: 0 auto 60px; }
+
+  /* Как работи */
+  .how-it-works {
+    background: white; border-radius: 16px; border: 1px solid var(--border);
+    padding: 32px 36px; box-shadow: var(--card-shadow); margin-bottom: 28px;
+  }
+  .how-title {
+    font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--navy); margin-bottom: 24px;
+  }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  .step { text-align: center; padding: 16px 8px; }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--sky));
+    color: white; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+  }
+  .step-icon { font-size: 24px; margin-bottom: 8px; }
+  .step-label { font-weight: 600; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+  .step-desc  { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  .step-arrow {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--border); padding-top: 22px;
+  }
+
+  /* FAQ акордеон */
+  .faq-section { margin-bottom: 28px; }
+  .faq-section-title {
+    font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700;
+    color: var(--navy); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .faq-item {
+    background: white; border-radius: 12px; border: 1px solid var(--border);
+    box-shadow: var(--card-shadow); margin-bottom: 8px; overflow: hidden;
+  }
+
+  .faq-q {
+    padding: 16px 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 600; font-size: 14.5px; color: var(--navy);
+    transition: background 0.2s; user-select: none;
+  }
+  .faq-q:hover { background: #f7f9ff; }
+
+  .faq-chevron { font-size: 12px; color: var(--muted); transition: transform 0.25s; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+  .faq-a {
+    display: none; padding: 0 20px 16px;
+    font-size: 14px; color: var(--muted); line-height: 1.7;
+    border-top: 1px solid var(--border);
+  }
+  .faq-a p { padding-top: 14px; }
+  .faq-item.open .faq-a { display: block; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ══ НАВ ══ -->
+  <nav>
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo">📡</div>
+      <div>
+        <div class="nav-brand-text">Smart Village Box</div>
+        <div class="nav-brand-sub">Граждански сигнали</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Начало</a></li>
+      <li>
+        <a href="signals-new.html">Сигнали <span class="chevron">▾</span></a>
+        <div class="dropdown">
+          <a href="signals-new.html">Нови сигнали</a>
+          <a href="signals-archive.html">Архив</a>
+        </div>
+      </li>
+      <li><a href="analytics.html">Аналитика</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="signals-new.html" class="btn-ghost">🔔</a>
+      <a href="signals-new.html" class="btn-primary">+ Нов сигнал</a>
+      <a href="profile.html" class="nav-avatar" title="Профил">ИВ</a>
+    </div>
+  </nav>
+
+  <!-- ══ ХЕДЪР ══ -->
+  <div class="page-header">
+    <div class="page-header-label">Помощ</div>
+    <h1>FAQ & Инструкции</h1>
+    <p>Как работи системата, как да подадеш сигнал и отговори на най-честите въпроси.</p>
+  </div>
+
+  <div class="main">
+
+    <!-- Как работи -->
+    <div class="how-it-works">
+      <div class="how-title">⚙️ Как работи Smart Village Box?</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-icon">📡</div>
+          <div class="step-label">Засичане</div>
+          <div class="step-desc">Жителят натиска бутона на устройството или подава сигнал чрез микрофон</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-icon">🤖</div>
+          <div class="step-label">Обработка</div>
+          <div class="step-desc">Raspberry Pi обработва сигнала, определя категория и приоритет автоматично</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-icon">📋</div>
+          <div class="step-label">Регистрация</div>
+          <div class="step-desc">Сигналът постъпва в системата и се визуализира на таблото на администрацията</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-icon">✅</div>
+          <div class="step-label">Решаване</div>
+          <div class="step-desc">Администрацията реагира и маркира сигнала като решен. Жителят получава известие</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ — Устройство -->
+    <div class="faq-section">
+      <div class="faq-section-title">📡 Устройство и хардуер</div>
+
+      <div class="faq-item">
+        <div class="faq-q">Какво е Smart Village Box физически? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Smart Village Box е малко електронно устройство, базирано на Raspberry Pi. Оборудвано е с бутон за подаване на сигнал, микрофон за гласова команда и LED индикатор за статус. Монтира се на обществено място в населеното място.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Нужно ли е интернет за да работи устройството? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Да, устройството се нуждае от интернет връзка за да изпрати сигналите към сървъра. Поддържа се WiFi и LTE (с SIM карта). При временна липса на връзка сигналите се запазват локално и се изпращат при възстановяване на интернета.</p></div>
+      </div>
+    </div>
+
+    <!-- FAQ — Сигнали -->
+    <div class="faq-section">
+      <div class="faq-section-title">📋 Подаване на сигнали</div>
+
+      <div class="faq-item">
+        <div class="faq-q">Как да подам сигнал от устройството? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Натиснете бутона на устройството. LED ще светне синьо — говорете ясно описание на проблема. При зелена светлина сигналът е изпратен успешно. При червена светлина — опитайте отново.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Мога ли да подам сигнал от телефона или компютъра? <span class="faq-chevrap">▾</span></div>
+        <div class="faq-a"><p>Да! Отворете страницата <a href="signals-new.html" style="color:var(--blue)">Нови сигнали</a>, попълнете формата и натиснете „Изпрати сигнал". Сигналът ще постъпи незабавно в системата.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Колко бързо ще бъде решен моят сигнал? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Средното време за реакция е 1.8 часа. Сигналите с висок приоритет (аварии, безопасност) се обработват до 30 минути. Можете да следите статуса на сигнала в реално време от таблото.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Какво се случва след решаване на сигнала? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Сигналът се маркира като „Решен" и се архивира. Ако сте оставили имейл или телефон — ще получите автоматично известие. Архивът е достъпен публично в секция <a href="signals-archive.html" style="color:var(--blue)">Архив</a>.</p></div>
+      </div>
+    </div>
+
+    <!-- FAQ — Акаунт -->
+    <div class="faq-section">
+      <div class="faq-section-title">👤 Акаунт и профил</div>
+
+      <div class="faq-item">
+        <div class="faq-q">Задължително ли е да имам акаунт? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Не. Можете да подавате сигнали анонимно от устройството. Акаунтът ви позволява да следите историята на вашите сигнали и да получавате известия при решаване.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Как да промeня настройките за известия? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a"><p>Влезте в <a href="profile.html" style="color:var(--blue)">Профил</a> и отворете секцията „Настройки за известия". Там можете да включите/изключите имейл, SMS и дайджест известия.</p></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">📡</div>
+        <span class="footer-logo-text">Smart Village Box</span>
+      </div>
+      <p>Интелигентна система за граждански сигнали, създадена за малки общини и села. Разработена в рамките на HACK TUES 12.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Навигация</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Начало</a></li>
+        <li><a href="signals-new.html">Нови сигнали</a></li>
+        <li><a href="signals-archive.html">Архив</a></li>
+        <li><a href="analytics.html">Аналитика</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Помощ</div>
+      <ul class="footer-links">
+        <li><a href="faq.html">Инструкции за употреба</a></li>
+        <li><a href="faq.html">Често задавани въпроси</a></li>
+        <li><a href="faq.html">Как работи системата</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Контакти</div>
+      <ul class="footer-links">
+        <li><a href="contacts.html">📧 info@smartvillagebox.bg</a></li>
+        <li><a href="contacts.html">📞 0800 123 456</a></li>
+        <li><a href="contacts.html">Свържи се с нас</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span><strong>Smart Village Box</strong> · Граждански сигнали за малки населени места</span>
+    <span>HACK TUES 12 · 2025</span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нови сигнали — Smart Village Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .main { max-width: 1200px; margin: 0 auto 60px; }
+
+  /* Филтри */
+  .filters {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+  }
+  .filter-btn {
+    padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 600;
+    border: 1.5px solid var(--border); background: white; color: var(--muted);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: #eff6ff; border-color: #bfdbfe; color: var(--blue);
+  }
+
+  /* Карти сигнали */
+  .signals-grid { display: flex; flex-direction: column; gap: 12px; }
+
+  .signal-card {
+    background: white; border-radius: 14px;
+    border: 1px solid var(--border); padding: 22px 26px;
+    box-shadow: var(--card-shadow);
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 20px;
+    transition: all 0.25s; cursor: pointer;
+    animation: fadeIn 0.3s ease both;
+  }
+  .signal-card:hover { box-shadow: var(--card-shadow-hover); border-color: #bfdbfe; transform: translateX(4px); }
+
+  .signal-num {
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--cream); border-radius: 8px; padding: 6px 10px;
+    text-align: center; min-width: 62px;
+  }
+
+  .signal-title { font-weight: 600; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
+  .signal-desc  { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+
+  .signal-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 11.5px; font-weight: 500;
+    padding: 2px 8px; border-radius: 6px;
+  }
+  .tag-cat   { background: #eff6ff; color: var(--blue); }
+  .tag-new   { background: #ecfdf5; color: #059669; }
+
+  .signal-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; min-width: 110px; }
+
+  .priority { padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .priority-high { background: #fee2e2; color: #c0392b; }
+  .priority-med  { background: #fff7ed; color: #c2410c; }
+  .priority-low  { background: #f0fdf4; color: #166534; }
+  .signal-time   { font-size: 11.5px; color: var(--muted); }
+
+  /* Форма за нов сигнал */
+  .new-signal-panel {
+    background: white; border-radius: 16px;
+    border: 1px solid var(--border); padding: 32px 36px;
+    box-shadow: var(--card-shadow); margin-bottom: 36px;
+  }
+  .panel-title {
+    font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--navy); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  input[type="text"], select, textarea {
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; font-size: 14px; color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s; background: white;
+    width: 100%;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  .form-actions { display: flex; gap: 10px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ══ НАВ ══ -->
+  <nav>
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo">📡</div>
+      <div>
+        <div class="nav-brand-text">Smart Village Box</div>
+        <div class="nav-brand-sub">Граждански сигнали</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Начало</a></li>
+      <li>
+        <a href="signals-new.html" class="active">Сигнали <span class="chevron">▾</span></a>
+        <div class="dropdown">
+          <a href="signals-new.html">Нови сигнали</a>
+          <a href="signals-archive.html">Архив</a>
+        </div>
+      </li>
+      <li><a href="analytics.html">Аналитика</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="signals-new.html" class="btn-ghost">🔔</a>
+      <a href="signals-new.html" class="btn-primary">+ Нов сигнал</a>
+      <a href="profile.html" class="nav-avatar" title="Профил">ИВ</a>
+    </div>
+  </nav>
+
+  <!-- ══ ХЕДЪР ══ -->
+  <div class="page-header">
+    <div class="page-header-label">Сигнали</div>
+    <h1>Нови сигнали</h1>
+    <p>Подай нов сигнал или прегледай постъпилите от жителите на общината.</p>
+  </div>
+
+  <div class="main">
+
+    <!-- Форма за нов сигнал -->
+    <div class="new-signal-panel">
+      <div class="panel-title">📝 Подай нов сигнал</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Заглавие на проблема</label>
+          <input type="text" placeholder="Напр. Счупено осветление на ул. ...">
+        </div>
+        <div class="form-group">
+          <label>Категория</label>
+          <select>
+            <option>💡 Инфраструктура</option>
+            <option>🛣️ Пътища</option>
+            <option>💧 Водоснабдяване</option>
+            <option>🌿 Екология</option>
+            <option>🏗️ Строителство</option>
+            <option>🔒 Безопасност</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Описание</label>
+          <textarea placeholder="Опиши подробно проблема — местоположение, степен на опасност, засегнати лица..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Приоритет</label>
+          <select>
+            <option>🔴 Висок</option>
+            <option>🟠 Среден</option>
+            <option>🟢 Нисък</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Местоположение</label>
+          <input type="text" placeholder="Улица, квартал или координати">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-blue">📤 Изпрати сигнал</button>
+        <button class="btn btn-outline">Изчисти</button>
+      </div>
+    </div>
+
+    <!-- Филтри -->
+    <div class="filters">
+      <button class="filter-btn active">Всички</button>
+      <button class="filter-btn">💡 Инфраструктура</button>
+      <button class="filter-btn">🛣️ Пътища</button>
+      <button class="filter-btn">💧 Водоснабдяване</button>
+      <button class="filter-btn">🌿 Екология</button>
+      <button class="filter-btn">🔴 Висок приоритет</button>
+    </div>
+
+    <!-- Списък сигнали -->
+    <div class="signals-grid">
+
+      <div class="signal-card">
+        <div class="signal-num">Сигнал 1</div>
+        <div>
+          <div class="signal-title">Счупено улично осветление — ул. Розова 14</div>
+          <div class="signal-desc">Три лампи са изгорели. Районът е тъмен след 20:00ч. Рискове за пешеходци.</div>
+          <div class="signal-tags">
+            <span class="tag tag-cat">💡 Инфраструктура</span>
+            <span class="tag tag-new">● Нов</span>
+          </div>
+        </div>
+        <div class="signal-meta">
+          <span class="priority priority-high">Висок приоритет</span>
+          <span class="signal-time">Преди 2 часа</span>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-num">Сигнал 2</div>
+        <div>
+          <div class="signal-title">Дупка в асфалта — Главен път, км 3</div>
+          <div class="signal-desc">Голяма вдлъбнатина (≈40cm) представлява опасност за автомобили и велосипедисти.</div>
+          <div class="signal-tags">
+            <span class="tag tag-cat">🛣️ Пътища</span>
+            <span class="tag tag-new">● Нов</span>
+          </div>
+        </div>
+        <div class="signal-meta">
+          <span class="priority priority-high">Висок приоритет</span>
+          <span class="signal-time">Преди 5 часа</span>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-num">Сигнал 3</div>
+        <div>
+          <div class="signal-title">Прекъснато водоснабдяване — кв. Изток</div>
+          <div class="signal-desc">Без вода от снощи. Засегнати са около 12 домакинства. Решението е в процес.</div>
+          <div class="signal-tags">
+            <span class="tag tag-cat">💧 Водоснабдяване</span>
+            <span class="tag tag-new">● Нов</span>
+          </div>
+        </div>
+        <div class="signal-meta">
+          <span class="priority priority-med">Среден приоритет</span>
+          <span class="signal-time">Преди 14 часа</span>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-num">Сигнал 4</div>
+        <div>
+          <div class="signal-title">Незаконно сметище — край гората</div>
+          <div class="signal-desc">Изхвърлен строителен отпадък в горска местност. Нужна е почистваща акция.</div>
+          <div class="signal-tags">
+            <span class="tag tag-cat">🌿 Екология</span>
+            <span class="tag tag-new">● Нов</span>
+          </div>
+        </div>
+        <div class="signal-meta">
+          <span class="priority priority-low">Нисък приоритет</span>
+          <span class="signal-time">Преди 2 дни</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">📡</div>
+        <span class="footer-logo-text">Smart Village Box</span>
+      </div>
+      <p>Интелигентна система за граждански сигнали, създадена за малки общини и села. Разработена в рамките на HACK TUES 12.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Навигация</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Начало</a></li>
+        <li><a href="signals-new.html">Нови сигнали</a></li>
+        <li><a href="signals-archive.html">Архив</a></li>
+        <li><a href="analytics.html">Аналитика</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Помощ</div>
+      <ul class="footer-links">
+        <li><a href="faq.html">Инструкции за употреба</a></li>
+        <li><a href="faq.html">Често задавани въпроси</a></li>
+        <li><a href="faq.html">Как работи системата</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Контакти</div>
+      <ul class="footer-links">
+        <li><a href="contacts.html">📧 info@smartvillagebox.bg</a></li>
+        <li><a href="contacts.html">📞 0800 123 456</a></li>
+        <li><a href="contacts.html">Свържи се с нас</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span><strong>Smart Village Box</strong> · Граждански сигнали за малки населени места</span>
+    <span>HACK TUES 12 · 2025</span>
+  </div>
+</footer>
+
+<script>
+  // Филтър бутони
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

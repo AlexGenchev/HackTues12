@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Начало — Smart Village Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── HERO ── */
+  .hero {
+    display: grid; grid-template-columns: 1fr 420px;
+    min-height: 420px; border-radius: 20px;
+    overflow: hidden; box-shadow: var(--card-shadow);
+    background: white; margin-top: 32px;
+  }
+  .hero-content {
+    padding: 56px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #eff6ff; color: var(--blue);
+    border: 1px solid #bfdbfe; border-radius: 100px;
+    padding: 4px 12px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 20px; width: fit-content;
+  }
+  .hero-badge-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--sky); animation: pulse 2s infinite;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 38px; font-weight: 800; line-height: 1.15;
+    color: var(--navy); margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--blue); }
+  .hero > .hero-content > p {
+    font-size: 15.5px; line-height: 1.7; color: var(--muted);
+    max-width: 440px; margin-bottom: 32px;
+  }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-lg {
+    padding: 13px 28px; border-radius: 10px;
+    font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
+    background: var(--blue); color: white; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .btn-lg:hover { background: var(--navy-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,77,183,0.3); }
+  .btn-lg-outline {
+    padding: 13px 24px; border-radius: 10px; font-size: 14px; font-weight: 500;
+    border: 1.5px solid var(--border); background: transparent; color: var(--text);
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-lg-outline:hover { border-color: var(--sky); color: var(--blue); background: #f0f6ff; }
+  .hero-img { position: relative; overflow: hidden; background: linear-gradient(135deg,#dbeafe,#e0f2fe); }
+  .hero-img img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+  .hero-img-overlay { position: absolute; inset: 0; background: linear-gradient(to right,rgba(255,255,255,0.15),transparent); }
+
+  /* ── SECTION ── */
+  .section-divider { max-width: 1200px; margin: 40px auto 0; border: none; border-top: 1px solid var(--border); }
+  .section { max-width: 1200px; margin: 40px auto; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .section-title { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+  .section-title-accent { color: #c0392b; }
+  .badge-count { background: #fee2e2; color: #c0392b; border-radius: 100px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+  .view-all {
+    font-size: 13px; color: var(--blue); font-weight: 600;
+    text-decoration: none; display: flex; align-items: center; gap: 4px;
+    padding: 6px 12px; border-radius: 8px; border: 1px solid #bfdbfe;
+    background: #eff6ff; transition: all 0.2s;
+  }
+  .view-all:hover { background: #dbeafe; }
+
+  /* ── PROBLEM CARDS ── */
+  .problems-list { display: flex; flex-direction: column; gap: 12px; }
+  .problem-card {
+    background: white; border-radius: 14px; border: 1px solid var(--border);
+    padding: 20px 24px; box-shadow: var(--card-shadow);
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 18px; transition: all 0.25s; cursor: pointer;
+  }
+  .problem-card:hover { box-shadow: var(--card-shadow-hover); border-color: #bfdbfe; transform: translateX(4px); }
+  .problem-num {
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--cream); border-radius: 8px; padding: 6px 10px;
+    text-align: center; min-width: 60px;
+  }
+  .problem-title { font-weight: 600; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
+  .problem-desc  { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+  .problem-meta  { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .problem-priority { padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .priority-high { background: #fee2e2; color: #c0392b; }
+  .priority-med  { background: #fff7ed; color: #c2410c; }
+  .priority-low  { background: #f0fdf4; color: #166534; }
+  .problem-time  { font-size: 11.5px; color: var(--muted); }
+  .problem-cat   { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--blue); font-weight: 500; background: #eff6ff; padding: 2px 8px; border-radius: 6px; margin-top: 4px; }
+
+  /* ── STATS ── */
+  .stats-row { max-width: 1200px; margin: 0 auto 40px; display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .stat-card { background: white; border-radius: 14px; border: 1px solid var(--border); padding: 24px 28px; box-shadow: var(--card-shadow); }
+  .stat-val  { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .stat-val.up   { color: var(--green); }
+  .stat-val.warn { color: #c0392b; }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .stat-bar   { height: 4px; background: var(--border); border-radius: 2px; margin-top: 14px; overflow: hidden; }
+  .stat-fill  { height: 100%; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ══ НАВ ══ -->
+  <nav>
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo">📡</div>
+      <div>
+        <div class="nav-brand-text">Smart Village Box</div>
+        <div class="nav-brand-sub">Граждански сигнали</div>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="active"> Начало</a></li>
+      <li>
+        <a href="signals-new.html">Сигнали <span class="chevron">▾</span></a>
+        <div class="dropdown">
+          <a href="signals-new.html">Нови сигнали</a>
+          <a href="signals-archive.html">Архив</a>
+        </div>
+      </li>
+      <li><a href="analytics.html">Аналитика</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="signals-new.html" class="btn-ghost">🔔</a>
+      <a href="signals-new.html" class="btn-primary">+ Нов сигнал</a>
+      <a href="profile.html" class="nav-avatar" title="Профил">ИВ</a>
+    </div>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Система активна · 3 нови сигнала днес
+      </div>
+      <h1>Умна система за<br><span>граждански сигнали</span><br>за малки населени места</h1>
+      <p>Чрез физическо устройство с Raspberry Pi, бутон и микрофон жителите лесно съобщават за проблеми. Системата автоматично ги обработва, категоризира и изпраща към администрацията.</p>
+      <div class="hero-cta">
+        <a href="signals-new.html" class="btn-lg"> Виж сигналите →</a>
+        <a href="faq.html" class="btn-lg-outline">Как работи</a>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=440&fit=crop&crop=center" alt="Village community" />
+      <div class="hero-img-overlay"></div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ══ ПРОБЛЕМИ ══ -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <span class="section-title-accent">Проблеми</span>
+        <span class="badge-count">7 активни</span>
+      </div>
+      <a href="signals-new.html" class="view-all">Всички сигнали →</a>
+    </div>
+
+    <div class="problems-list">
+      <div class="problem-card">
+        <div class="problem-num">Проблем 1</div>
+        <div class="problem-body">
+          <div class="problem-title">Счупено улично осветление — ул. Розова 14</div>
+          <div class="problem-desc">Три лампи са изгорели. Районът е тъмен след 20:00ч. Рискове за пешеходци.</div>
+          <span class="problem-cat">💡 Инфраструктура</span>
+        </div>
+        <div class="problem-meta">
+          <span class="problem-priority priority-high">Висок приоритет</span>
+          <span class="problem-time">Преди 2 часа</span>
+        </div>
+      </div>
+
+      <div class="problem-card">
+        <div class="problem-num">Проблем 2</div>
+        <div class="problem-body">
+          <div class="problem-title">Дупка в асфалта — Главен път, км 3</div>
+          <div class="problem-desc">Голяма вдлъбнатина (≈40cm) представлява опасност за автомобили и велосипедисти.</div>
+          <span class="problem-cat">🛣️ Пътища</span>
+        </div>
+        <div class="problem-meta">
+          <span class="problem-priority priority-high">Висок приоритет</span>
+          <span class="problem-time">Преди 5 часа</span>
+        </div>
+      </div>
+
+      <div class="problem-card">
+        <div class="problem-num">Проблем 3</div>
+        <div class="problem-body">
+          <div class="problem-title">Прекъснато водоснабдяване — кв. Изток</div>
+          <div class="problem-desc">Без вода от снощи. Засегнати са около 12 домакинства. Решението е в процес.</div>
+          <span class="problem-cat">💧 Водоснабдяване</span>
+        </div>
+        <div class="problem-meta">
+          <span class="problem-priority priority-med">Среден приоритет</span>
+          <span class="problem-time">Преди 14 часа</span>
+        </div>
+      </div>
+
+      <div class="problem-card">
+        <div class="problem-num">Проблем 4</div>
+        <div class="problem-body">
+          <div class="problem-title">Незаконно сметище — край гората</div>
+          <div class="problem-desc">Изхвърлен строителен отпадък в горска местност. Нужна е почистваща акция.</div>
+          <span class="problem-cat">🌿 Екология</span>
+        </div>
+        <div class="problem-meta">
+          <span class="problem-priority priority-low">Нисък приоритет</span>
+          <span class="problem-time">Преди 2 дни</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ СТАТИСТИКИ ══ -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val warn">7</div>
+      <div class="stat-label">Активни сигнала</div>
+      <div class="stat-bar"><div class="stat-fill" style="width:35%;background:var(--red);"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val up">24</div>
+      <div class="stat-label">Решени тази седмица</div>
+      <div class="stat-bar"><div class="stat-fill" style="width:75%;background:var(--green);"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--blue);">1.8ч</div>
+      <div class="stat-label">Средно време за реакция</div>
+      <div class="stat-bar"><div class="stat-fill" style="width:55%;background:var(--sky);"></div></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">📡</div>
+        <span class="footer-logo-text">Smart Village Box</span>
+      </div>
+      <p>Интелигентна система за граждански сигнали, създадена за малки общини и села. Разработена в рамките на HACK TUES 12.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Навигация</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Начало</a></li>
+        <li><a href="signals-new.html">Нови сигнали</a></li>
+        <li><a href="signals-archive.html">Архив</a></li>
+        <li><a href="analytics.html">Аналитика</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Помощ</div>
+      <ul class="footer-links">
+        <li><a href="faq.html">Инструкции за употреба</a></li>
+        <li><a href="faq.html">Често задавани въпроси</a></li>
+        <li><a href="faq.html">Как работи системата</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Контакти</div>
+      <ul class="footer-links">
+        <li><a href="contacts.html">📧 info@smartvillagebox.bg</a></li>
+        <li><a href="contacts.html">📞 0800 123 456</a></li>
+        <li><a href="contacts.html">Свържи се с нас</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span><strong>Smart Village Box</strong> · Граждански сигнали за малки населени места</span>
+    <span>HACK TUES 12 · 2025</span>
+  </div>
+</footer>
+
+</body>
+</html>
