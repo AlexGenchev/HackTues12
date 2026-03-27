@@ -1,0 +1,28 @@
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# SQLite database
+*.db
+backend/smart_box.db
+
+# Uploaded / generated files
+uploaded_audio/
+backend/uploaded_audio/
+
+# Environment variables
+.env
+
+# IDE / editor files
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
