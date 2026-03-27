@@ -1,12 +1,19 @@
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from openai import OpenAI
+from dotenv import load_dotenv
 import uvicorn
 import shutil
 import os
 
 from app.database import engine, SessionLocal, Base
 from app import models, schemas
+
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+print("OPENAI_API_KEY loaded:", bool(os.getenv("OPENAI_API_KEY")))
 
 Base.metadata.create_all(bind=engine)
 
@@ -23,6 +30,19 @@ def get_db():
 
 UPLOAD_DIR = "uploaded_audio"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+
+def transcribe_audio(audio_path: str) -> Optional[str]:
+    try:
+        with open(audio_path, "rb") as audio_file:
+            transcript = client.audio.transcriptions.create(
+                model="gpt-4o-mini-transcribe",
+                file=audio_file
+            )
+        return transcript.text
+    except Exception as e:
+        print("Speech-to-text error:", e)
+        return None
 
 
 def process_signal_logic(text: str) -> dict:
@@ -82,7 +102,10 @@ def upload_complaint(
         audio_path = file_location
 
         if not processed_text:
-            processed_text = "Текст, генериран от аудио файла."
+            raise HTTPException(
+                status_code=500,
+                detail="Неуспешно разпознаване на аудио."
+            )
 
     if not processed_text:
         raise HTTPException(
@@ -108,6 +131,7 @@ def upload_complaint(
 
     return {
         "success": True,
+        "recognised_text": processed_text,
         "complaint_id": new_complaint.id,
         "generated_data": {
             "title": new_complaint.title,
