@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from groq import Groq
 from dotenv import load_dotenv
+import smtplib
+from email.message import EmailMessage
 import shutil
 import uuid
 import os
@@ -56,7 +58,25 @@ def transcribe_audio(audio_path: str) -> Optional[str]:
         return None
 
 
-def process_signal_logic(text: str) -> dict:
+formal_template = """
+Официално регистрационно оплакване
+
+Заглавие: {title}
+Категория: {category}
+Приоритет: {priority}
+
+Описание на проблема: 
+{description}
+   
+Местоположение: {location}
+Подал сигнал: {name}
+
+Моля, вземете необходимите мерки за решаване на проблема.
+Благодарим за съдействието.
+"""
+
+
+def process_signal_logic(text: str, name: str, location: str) -> dict:
     text_lower = text.lower()
     category = "Others"
     priority = "Low"
@@ -82,9 +102,13 @@ def process_signal_logic(text: str) -> dict:
     if "спешно" in text_lower or "опасно" in text_lower:
         priority = "High"
 
-    formal_message = (
-        f"Официално регистрирано оплакване относно: {text}. "
-        f"Моля за проверка от съответните органи."
+    formal_message = formal_template.format(
+        title=title,
+        category=category,
+        priority=priority,
+        description=text,
+        location=location,
+        name=name
     )
 
     return {
@@ -93,6 +117,28 @@ def process_signal_logic(text: str) -> dict:
         "priority": priority,
         "formal_message": formal_message
     }
+
+
+def send_email(to_email: str, subject: str, body: str, high_priority: bool = False):
+    msg = EmailMessage()
+    msg['From'] = os.getenv("SMTP_USER")
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.set_content(body)
+
+    if high_priority:
+        msg['X-Priority'] = '1'
+        msg['X-MSMail-Priority'] = 'High'
+        msg['Importance'] = 'High'
+
+    try:
+        with smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT"))) as server:
+            server.starttls()
+            server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASSWORD"))
+            server.send_message(msg)
+        print(f"Email sent to {to_email}, high priority: {high_priority}")
+    except Exception as e:
+        print("Error sending email:", e)
 
 
 @app.post("/complaints/upload")
@@ -130,7 +176,11 @@ def upload_complaint(
             detail="Не е предоставен текст или аудио."
         )
 
-    ai_data = process_signal_logic(processed_text)
+    ai_data = process_signal_logic(
+        processed_text,
+        name=name if name else "Анонимен",
+        location=location if location else "Неуточнено"
+    )
 
     new_complaint = models.Complaint(
         name=name,
@@ -147,6 +197,26 @@ def upload_complaint(
     db.add(new_complaint)
     db.commit()
     db.refresh(new_complaint)
+
+    category_to_email = {
+        "Road safety": "v.nacheva@api.bg",  # Glaven sekretar
+        "Garbage": "inspectorat@inspectorat-so.org",
+        "Water": "dker@dker.bg",
+        "Lighting": "dker@dker.bg"
+    }
+
+    recipient_email = category_to_email.get(new_complaint.category, "")
+    high_priority_flag = True if new_complaint.priority == "High" else False
+
+    if recipient_email:
+        send_email(
+            to_email=recipient_email,
+            subject=f"Нов сигнал: {new_complaint.title}",
+            body=new_complaint.formal_message,
+            high_priority=high_priority_flag
+        )
+    else:
+        print(f"Няма дефиниран имейл за категория {new_complaint.category}")
 
     return {
         "success": True,
