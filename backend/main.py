@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from groq import Groq
@@ -18,6 +20,13 @@ print("GROQ_API_KEY loaded:", bool(os.getenv("GROQ_API_KEY")))
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Smart Box Backend API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_db():
@@ -31,6 +40,7 @@ def get_db():
 UPLOAD_DIR = os.getenv("UPLOAD_DIR", os.path.join(
     os.path.dirname(__file__), "uploaded_audio"))
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/audio", StaticFiles(directory=UPLOAD_DIR), name="audio")
 
 
 def transcribe_audio(audio_path: str) -> Optional[str]:
@@ -150,6 +160,17 @@ def upload_complaint(
             "priority": new_complaint.priority,
             "status": new_complaint.status,
             "formal_message": new_complaint.formal_message
+        },
+        "complaint": {
+            "id": new_complaint.id,
+            "title": new_complaint.title,
+            "category": new_complaint.category,
+            "priority": new_complaint.priority,
+            "status": new_complaint.status,
+            "created_at": new_complaint.created_at,
+            "original_message": new_complaint.original_message,
+            "formal_message": new_complaint.formal_message,
+            "audio_path": new_complaint.audio_path
         }
     }
 
