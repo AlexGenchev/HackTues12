@@ -1,21 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
-from datetime import datetime, timezone
-from .database import Base
+# backend/app/models.py
+# Compatibility shim — re-exports the canonical Complaint model from
+# backend.models so that any code importing from backend.app.models continues
+# to work without redeclaring the table (which would cause an SQLAlchemy
+# mapping conflict).
 
-
-class Complaint(Base):
-    __tablename__ = "complaints"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=True)
-    location = Column(String, nullable=True)
-    title = Column(String, nullable=False)
-    original_message = Column(Text, nullable=False)
-    # primerno Voda, tok, safety, sustoqnie na ulitsata, bokluk
-    formal_message = Column(Text, nullable=False)
-    category = Column(String, nullable=False)
-    # low, Medium, High# new, reviewed, in progress, resolved
-    priority = Column(String, nullable=False)
-    status = Column(String, default="New")
-    audio_path = Column(String, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+from backend.models import Complaint  # noqa: F401

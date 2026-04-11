@@ -1,13 +1,6 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+# backend/app/database.py
+# Compatibility shim — delegates to the canonical backend/database.py.
+# Kept so that any code still importing from backend.app.database continues
+# to work without changes.
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./smart_box.db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
+from backend.database import Base, engine, SessionLocal, get_db  # noqa: F401

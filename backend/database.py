@@ -1,0 +1,28 @@
+# backend/database.py
+# SQLAlchemy database connection and session factory for Smart Box backend.
+
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+# Store the database file next to this file in the backend directory.
+_DB_PATH = os.path.join(os.path.dirname(__file__), "smart_box.db")
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{_DB_PATH}"
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+
+def get_db():
+    """Yield a database session and ensure it is closed after use."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
