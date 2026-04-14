@@ -23,19 +23,16 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-label">Навигация</div>
-    <a href="admin_panel.html" class="sidebar-item active">
+    <div class="sidebar-item active" onclick="switchTab('signals', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
       Сигнали
       <span class="sidebar-badge" id="sb-count">0</span>
-    </a>
-    <a href="statistics.html" class="sidebar-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Статистики
-    </a>
-    <a href="settings.html" class="sidebar-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Настройки
-    </a>
+    </div>
+    <div class="sidebar-item" onclick="switchTab('emails', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      Имейли
+      <span class="sidebar-badge" style="background:rgba(155, 81, 224, 0.15); color:#9b51e0" id="email-count">0</span>
+    </div>
 
     <div class="sidebar-label" style="margin-top:auto">API Адрес</div>
     <div style="padding:0 16px 8px">
@@ -56,69 +53,116 @@
   <!-- MAIN -->
   <main class="main">
 
-    <!-- STATS -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-label">Всичко</div>
-        <div class="stat-value accent" id="stat-total">—</div>
-        <div class="stat-sub">сигнала</div>
+    <!-- VIEW: SIGNALS -->
+    <div id="view-signals" class="view-tab" style="display:block; display:flex; flex-direction:column; gap:24px;">
+      <!-- STATS -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-label">Всичко</div>
+          <div class="stat-value accent" id="stat-total">—</div>
+          <div class="stat-sub">сигнала</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Нови</div>
+          <div class="stat-value" id="stat-new">—</div>
+          <div class="stat-sub">за разглеждане</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">В прогрес</div>
+          <div class="stat-value yellow" id="stat-prog">—</div>
+          <div class="stat-sub">активни</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Решени</div>
+          <div class="stat-value green" id="stat-res">—</div>
+          <div class="stat-sub">завършени</div>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Нови</div>
-        <div class="stat-value" id="stat-new">—</div>
-        <div class="stat-sub">за разглеждане</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">В прогрес</div>
-        <div class="stat-value yellow" id="stat-prog">—</div>
-        <div class="stat-sub">активни</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Решени</div>
-        <div class="stat-value green" id="stat-res">—</div>
-        <div class="stat-sub">завършени</div>
-      </div>
-    </div>
 
-    <!-- TOOLBAR -->
-    <div class="toolbar">
-      <span class="toolbar-title">Сигнали</span>
-      <button class="filter-btn active" onclick="setFilter('all',this)">Всички</button>
-      <button class="filter-btn" onclick="setFilter('New',this)">Нови</button>
-      <button class="filter-btn" onclick="setFilter('Reviewed',this)">Прегледани</button>
-      <button class="filter-btn" onclick="setFilter('In Progress',this)">В прогрес</button>
-      <button class="filter-btn" onclick="setFilter('Resolved',this)">Решени</button>
-      <div class="search-wrap">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="text" placeholder="Търси сигнал..." id="searchInput" oninput="renderTable()" />
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <span class="toolbar-title">Сигнали</span>
+        <button class="filter-btn active" onclick="setFilter('all',this)">Всички</button>
+        <button class="filter-btn" onclick="setFilter('New',this)">Нови</button>
+        <button class="filter-btn" onclick="setFilter('Reviewed',this)">Прегледани</button>
+        <button class="filter-btn" onclick="setFilter('In Progress',this)">В прогрес</button>
+        <button class="filter-btn" onclick="setFilter('Resolved',this)">Решени</button>
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" placeholder="Търси сигнал..." id="searchInput" oninput="renderTable()" />
+        </div>
       </div>
-    </div>
 
-    <!-- TABLE -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#ID</th>
-            <th>Заглавие</th>
-            <th>Категория</th>
-            <th>Приоритет</th>
-            <th>Статус</th>
-            <th>Дата</th>
-          </tr>
-        </thead>
-        <tbody id="complaints-tbody">
-          <tr><td colspan="6"><div class="empty">Натисни „Зареди" за да видиш сигналите</div></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- TABLE -->
+      <div class="table-wrap" style="flex:1">
+        <table>
+          <thead>
+            <tr>
+              <th>#ID</th>
+              <th>Заглавие</th>
+              <th>Категория</th>
+              <th>Приоритет</th>
+              <th>Статус</th>
+              <th>Дата</th>
+            </tr>
+          </thead>
+          <tbody id="complaints-tbody">
+            <tr><td colspan="6"><div class="empty">Натисни „Зареди" за да видиш сигналите</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div> <!-- END VIEW: SIGNALS -->
+
+    <!-- VIEW: EMAILS -->
+    <div id="view-emails" class="view-tab" style="display:none; flex:1; gap:24px;">
+      
+      <!-- Email List -->
+      <div class="table-wrap" style="width: 320px; display:flex; flex-direction:column; background:var(--surface);">
+        <div style="padding: 15px 20px; font-family:var(--mono); font-size:12px; color:#9b51e0; border-bottom:1px solid var(--border); letter-spacing:.1em; text-transform:uppercase; font-weight:600;">
+          Чакащи Имейли
+        </div>
+        <div id="emailList" style="flex:1; overflow-y:auto; display:flex; flex-direction:column;">
+           <!-- list injected here -->
+        </div>
+      </div>
+
+      <!-- Email Editor -->
+      <div class="table-wrap" style="flex:1; padding:24px; display:flex; flex-direction:column; background:var(--surface);">
+        <div id="emptyEmailState" class="empty" style="flex:1; display:flex; align-items:center; justify-content:center;">
+          Изберете имейл от списъка за преглед и изпращане.
+        </div>
+        <div id="activeEmailEditor" style="display:none; flex-direction:column; flex:1;">
+          <h2 style="margin-bottom:20px; color:var(--text); font-weight:500;">Преглед на Имейл</h2>
+          
+          <div class="panel-section" style="margin-bottom:15px;">
+            <div class="panel-section-label">До (Получател)</div>
+            <input type="text" id="emailTo" class="sidebar-api-input" style="font-size:13px; padding:10px;" />
+          </div>
+
+          <div class="panel-section" style="margin-bottom:15px;">
+            <div class="panel-section-label">Тема</div>
+            <input type="text" id="emailSubject" class="sidebar-api-input" style="font-size:13px; padding:10px;" />
+          </div>
+
+          <div class="panel-section" style="flex:1; display:flex; flex-direction:column; margin-bottom:15px;">
+            <div class="panel-section-label" style="margin-bottom:8px;">Съдържание</div>
+            <textarea id="emailBody" class="sidebar-api-input" style="flex:1; font-size:13px; padding:10px; resize:none; font-family:var(--sans);"></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+            <button class="save-btn" onclick="discardEmail()" style="background:transparent; border:1px solid var(--red); color:var(--red);">Отхвърли</button>
+            <button class="save-btn" onclick="sendEmail()" style="background:#9b51e0; color:white;">Потвърди & Изпрати</button>
+          </div>
+        </div>
+      </div>
+    </div> <!-- END VIEW: EMAILS -->
 
   </main>
 </div>
 
-<!-- DETAIL PANEL OVERLAY -->
+<!-- SIGNAL DETAIL PANEL OVERLAY -->
 <div class="panel-overlay" id="panelOverlay" onclick="closePanel(event)">
   <div class="detail-panel" id="detailPanel">
     <div class="panel-header">
@@ -166,7 +210,7 @@
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">✓ Статусът е обновен</div>
+<div class="toast" id="toast">✓ Успешно обновено</div>
 
 <script>
 const API = () => document.getElementById('apiInput').value.replace(/\/$/, '');
@@ -176,7 +220,26 @@ let currentFilter  = 'all';
 let currentId      = null;
 let selectedStatus = null;
 
-// ── LOAD ──
+// ── NAVIGATION / TABS ──
+function switchTab(tabId, el) {
+  // Update sidebar active class
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  // Hide all view tabs
+  document.querySelectorAll('.view-tab').forEach(t => t.style.display = 'none');
+
+  // Show target
+  const target = document.getElementById('view-' + tabId);
+  if (target) {
+    target.style.display = 'flex';
+    if (tabId === 'emails') {
+      loadPendingEmails();
+    }
+  }
+}
+
+// ── INIT ──
 async function loadComplaints() {
   try {
     const res = await fetch(`${API()}/complaints`);
@@ -191,7 +254,7 @@ async function loadComplaints() {
   }
 }
 
-// ── STATS ──
+// ── STATS & CHART ──
 function updateStats() {
   document.getElementById('stat-total').textContent = allComplaints.length;
   document.getElementById('stat-new').textContent   = allComplaints.filter(c => c.status === 'New').length;
@@ -199,7 +262,7 @@ function updateStats() {
   document.getElementById('stat-res').textContent   = allComplaints.filter(c => c.status === 'Resolved').length;
 }
 
-// ── FILTER ──
+// ── SIGNALS FILTER & RENDER ──
 function setFilter(f, btn) {
   currentFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -207,7 +270,6 @@ function setFilter(f, btn) {
   renderTable();
 }
 
-// ── RENDER TABLE ──
 function renderTable() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   let data = allComplaints;
@@ -236,7 +298,7 @@ function renderTable() {
   `).join('');
 }
 
-// ── OPEN PANEL ──
+// ── SIGNAL DETAIL PANEL ──
 async function openPanel(id) {
   currentId = id;
   selectedStatus = null;
@@ -289,7 +351,6 @@ function closePanel(e, force) {
   }
 }
 
-// ── STATUS ──
 function selectStatus(btn) {
   document.querySelectorAll('.status-opt').forEach(b => b.className = 'status-opt');
   btn.classList.add(statusClass(btn.dataset.status));
@@ -317,7 +378,8 @@ async function saveStatus() {
     document.getElementById('p-badges').innerHTML =
       statusBadge(selectedStatus) +
       document.getElementById('p-badges').innerHTML.replace(/^<span[^>]*>[^<]*<\/span>\s*/, '');
-    showToast();
+    
+    showToast("Статусът е обновен успешно!");
   } catch(e) {
     alert('Грешка: ' + e.message);
   } finally {
@@ -326,10 +388,138 @@ async function saveStatus() {
   }
 }
 
-function showToast() {
+function showToast(msg) {
   const t = document.getElementById('toast');
+  t.textContent = "✓ " + msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── EMAILS LOGIC ──
+let emailQueue = [];
+
+async function loadPendingEmails() {
+  try {
+    const res = await fetch(`${API()}/complaints/emails/pending`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    emailQueue = data.map(c => ({
+      id: c.id,
+      to: c.sent_to_email,
+      subject: `[СИГНАЛ][${c.category}][${c.urgency}] Гражданска жалба`,
+      body: c.formal_letter
+    }));
+    renderEmailList();
+  } catch(e) {
+    console.error('Грешка при зареждане на чакащи имейли:', e);
+  }
+}
+
+let selectedEmailId = null;
+
+function renderEmailList() {
+  const listEl = document.getElementById('emailList');
+  const countEl = document.getElementById('email-count');
+  listEl.innerHTML = '';
+  countEl.textContent = emailQueue.length;
+  
+  if (emailQueue.length === 0) {
+    listEl.innerHTML = '<div class="empty" style="padding-top:40px;">Няма чакащи имейли.</div>';
+    return;
+  }
+
+  emailQueue.forEach(email => {
+    const div = document.createElement('div');
+    const isActive = email.id === selectedEmailId;
+    
+    div.style.padding = '15px 20px';
+    div.style.borderBottom = '1px solid var(--border)';
+    div.style.cursor = 'pointer';
+    div.style.transition = 'background 0.2s';
+    
+    if (isActive) {
+      div.style.background = 'rgba(155, 81, 224, 0.15)';
+      div.style.borderLeft = '4px solid #9b51e0';
+      div.style.paddingLeft = '16px';
+    } else {
+      div.onmouseover = () => div.style.background = 'rgba(155, 81, 224, 0.05)';
+      div.onmouseout = () => div.style.background = 'transparent';
+    }
+
+    div.onclick = () => selectEmail(email.id);
+    
+    div.innerHTML = `
+      <div style="font-weight: 500; margin-bottom: 5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        ${esc(email.subject)}
+      </div>
+      <div style="font-size: 11px; color: var(--muted); font-family: var(--mono);">
+        До: ${esc(email.to)}
+      </div>
+    `;
+    listEl.appendChild(div);
+  });
+}
+
+function selectEmail(id) {
+  selectedEmailId = id;
+  const email = emailQueue.find(e => e.id === id);
+  const emptyStateEl = document.getElementById('emptyEmailState');
+  const editorContentEl = document.getElementById('activeEmailEditor');
+
+  if (email) {
+    emptyStateEl.style.display = 'none';
+    editorContentEl.style.display = 'flex';
+
+    document.getElementById('emailTo').value = email.to;
+    document.getElementById('emailSubject').value = email.subject;
+    document.getElementById('emailBody').value = email.body;
+  } else {
+    emptyStateEl.style.display = 'flex';
+    editorContentEl.style.display = 'none';
+  }
+
+  renderEmailList();
+}
+
+async function sendEmail() {
+  if (!selectedEmailId) return;
+  const to = document.getElementById('emailTo').value;
+  const subject = document.getElementById('emailSubject').value;
+  const body = document.getElementById('emailBody').value;
+  
+  try {
+    const res = await fetch(`${API()}/complaints/${selectedEmailId}/send-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to, subject, body })
+    });
+    if (!res.ok) throw new Error((await res.json()).detail || "Грешка при изпращане");
+    
+    emailQueue = emailQueue.filter(e => e.id !== selectedEmailId);
+    selectedEmailId = null;
+    selectEmail(null);
+    showToast("Имейлът е изпратен успешно!");
+  } catch (e) {
+    alert("Грешка при изпращане на имейл: " + e.message);
+  }
+}
+
+async function discardEmail() {
+  if (!selectedEmailId) return;
+  if (confirm("Сигурни ли сте, че искате да отхвърлите този имейл без да го изпращате?")) {
+    try {
+      const res = await fetch(`${API()}/complaints/${selectedEmailId}/discard-email`, {
+        method: "POST"
+      });
+      if (!res.ok) throw new Error("Грешка при отхвърляне");
+      
+      emailQueue = emailQueue.filter(e => e.id !== selectedEmailId);
+      selectedEmailId = null;
+      selectEmail(null);
+    } catch (e) {
+      alert("Грешка: " + e.message);
+    }
+  }
 }
 
 // ── HELPERS ──
@@ -360,7 +550,9 @@ function fmtDateFull(dt) {
   return new Date(dt).toLocaleString('bg-BG', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
 
+// Initial Boot
 loadComplaints();
+
 </script>
 </body>
 </html>
