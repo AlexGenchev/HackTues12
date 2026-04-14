@@ -1,15 +1,4 @@
-# backend/data/municipalities.py
-# Lookup dictionary mapping Bulgarian village/city names (lowercase) to their
-# region and municipality. Derived from the original
-# dictionary_villages_cities_Water.txt file.
-#
-# Usage:
-#   from backend.data.municipalities import MUNICIPALITY_MAP
-#   info = MUNICIPALITY_MAP.get("ботевград")
-#   # -> {"region": "София", "municipality": "Ботевград"}
-
 MUNICIPALITY_MAP = {
-    # --- Божурище ---
     "божурище":   {"region": "София", "municipality": "Божурище"},
     "гурмазово":  {"region": "София", "municipality": "Божурище"},
     "златуша":    {"region": "София", "municipality": "Божурище"},
@@ -19,7 +8,6 @@ MUNICIPALITY_MAP = {
     "хераково":   {"region": "София", "municipality": "Божурище"},
     "храбърско":  {"region": "София", "municipality": "Божурище"},
 
-    # --- Ботевград ---
     "ботевград":  {"region": "София", "municipality": "Ботевград"},
     "врачеш":     {"region": "София", "municipality": "Ботевград"},
     "гурково":    {"region": "София", "municipality": "Ботевград"},
@@ -33,7 +21,6 @@ MUNICIPALITY_MAP = {
     "скравена":   {"region": "София", "municipality": "Ботевград"},
     "трудовец":   {"region": "София", "municipality": "Ботевград"},
 
-    # --- Годеч ---
     "годеч":      {"region": "София", "municipality": "Годеч"},
     "браковци":   {"region": "София", "municipality": "Годеч"},
     "букоровци":  {"region": "София", "municipality": "Годеч"},
@@ -52,7 +39,6 @@ MUNICIPALITY_MAP = {
     "ропот":      {"region": "София", "municipality": "Годеч"},
     "смолча":     {"region": "София", "municipality": "Годеч"},
 
-    # --- Горна Малина ---
     "горна малина":    {"region": "Горна Малина", "municipality": "Горна Малина"},
     "априлово":        {"region": "Горна Малина", "municipality": "Горна Малина"},
     "байлово":         {"region": "Горна Малина", "municipality": "Горна Малина"},
@@ -68,14 +54,12 @@ MUNICIPALITY_MAP = {
     "стъргел":         {"region": "Горна Малина", "municipality": "Горна Малина"},
     "чеканчево":       {"region": "Горна Малина", "municipality": "Горна Малина"},
 
-    # --- Долна Баня ---
     "долна баня":  {"region": "Долна Баня", "municipality": "Долна Баня"},
     "гуцал":       {"region": "Долна Баня", "municipality": "Долна Баня"},
     "марица":      {"region": "Долна Баня", "municipality": "Долна Баня"},
     "радуил":      {"region": "Долна Баня", "municipality": "Долна Баня"},
     "свети спас":  {"region": "Долна Баня", "municipality": "Долна Баня"},
 
-    # --- Драгоман ---
     "драгоман":        {"region": "Драгоман", "municipality": "Драгоман"},
     "беренде":         {"region": "Драгоман", "municipality": "Драгоман"},
     "беренде извор":   {"region": "Драгоман", "municipality": "Драгоман"},
@@ -94,7 +78,6 @@ MUNICIPALITY_MAP = {
     "раяновци":        {"region": "Драгоман", "municipality": "Драгоман"},
     "табан":           {"region": "Драгоман", "municipality": "Драгоман"},
 
-    # --- Елин Пелин ---
     "елин пелин":       {"region": "Елин Пелин", "municipality": "Елин Пелин"},
     "голяма раковица":  {"region": "Елин Пелин", "municipality": "Елин Пелин"},
     "григорево":        {"region": "Елин Пелин", "municipality": "Елин Пелин"},
@@ -102,7 +85,6 @@ MUNICIPALITY_MAP = {
     "елешница":         {"region": "Елин Пелин", "municipality": "Елин Пелин"},
     "караполци":        {"region": "Елин Пелин", "municipality": "Елин Пелин"},
 
-    # --- Ихтиман ---
     "ихтиман":     {"region": "Ихтиман", "municipality": "Ихтиман"},
     "белица":      {"region": "Ихтиман", "municipality": "Ихтиман"},
     "боерица":     {"region": "Ихтиман", "municipality": "Ихтиман"},
@@ -118,7 +100,6 @@ MUNICIPALITY_MAP = {
     "стамболово":  {"region": "Ихтиман", "municipality": "Ихтиман"},
     "черньово":    {"region": "Ихтиман", "municipality": "Ихтиман"},
 
-    # --- Костенец ---
     "вили костенец":    {"region": "Костенец", "municipality": "Костенец"},
     "костенец":         {"region": "Костенец", "municipality": "Костенец"},
     "момин проход":     {"region": "Костенец", "municipality": "Костенец"},
@@ -133,7 +114,6 @@ MUNICIPALITY_MAP = {
     "пчелин":           {"region": "Костенец", "municipality": "Костенец"},
     "пчелински бани":   {"region": "Костенец", "municipality": "Костенец"},
 
-    # --- Костинброд ---
     "костинброд":     {"region": "Костинброд", "municipality": "Костинброд"},
     "безден":         {"region": "Костинброд", "municipality": "Костинброд"},
     "богьовци":       {"region": "Костинброд", "municipality": "Костинброд"},
@@ -148,7 +128,6 @@ MUNICIPALITY_MAP = {
     "царичина":       {"region": "Костинброд", "municipality": "Костинброд"},
     "чибаовци":       {"region": "Костинброд", "municipality": "Костинброд"},
 
-    # --- Своге ---
     "своге":           {"region": "Своге", "municipality": "Своге"},
     "бакьово":         {"region": "Своге", "municipality": "Своге"},
     "батулия":         {"region": "Своге", "municipality": "Своге"},
@@ -167,7 +146,6 @@ MUNICIPALITY_MAP = {
     "еленов дол":      {"region": "Своге", "municipality": "Своге"},
     "завидовци":       {"region": "Своге", "municipality": "Своге"},
 
-    # --- Сливница ---
     "сливница":    {"region": "Сливница", "municipality": "Сливница"},
     "алдомировци": {"region": "Сливница", "municipality": "Сливница"},
     "братушково":  {"region": "Сливница", "municipality": "Сливница"},
