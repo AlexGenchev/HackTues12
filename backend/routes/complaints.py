@@ -23,7 +23,7 @@ def to_dict(c):
         "category": c.category, "location_mentioned": c.location_mentioned,
         "urgency": c.urgency, "sent_to_email": c.sent_to_email,
         "email_sent_successfully": c.email_sent_successfully,
-        "formal_letter": c.formal_letter, "processing_error": c.processing_error
+        "formal_letter": c.formal_letter
     }
 
 @router.post("/upload")

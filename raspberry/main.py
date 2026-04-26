@@ -16,7 +16,13 @@ _current_file = None
 def start_recording():
     global _recording_process, _current_file
     filename = os.path.join(RECORDINGS_DIR, f"rec_{datetime.now().strftime('%Y%m%d_%H%M%S')}.wav")
-    _recording_process = subprocess.Popen(["arecord", "-D", "plughw:2,0", "-f", "cd", "-t", "wav", filename])
+    
+    cmd = ["arecord", "-f", "cd", "-t", "wav", filename]
+    audio_device = os.getenv("AUDIO_DEVICE")
+    if audio_device:
+        cmd = ["arecord", "-D", audio_device, "-f", "cd", "-t", "wav", filename]
+        
+    _recording_process = subprocess.Popen(cmd)
     _current_file = filename
 
 def stop_and_upload():
