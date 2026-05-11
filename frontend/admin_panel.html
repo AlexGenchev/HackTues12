@@ -211,7 +211,8 @@ async function loadComplaints() {
   try {
     const res = await fetch(`${API()}/complaints`);
     if (!res.ok) throw new Error(res.status);
-    allComplaints = await res.json();
+    const data = await res.json();
+    allComplaints = data.items || data;
     updateStats();
     renderTable();
     document.getElementById('sb-count').textContent = allComplaints.length;
@@ -222,9 +223,9 @@ async function loadComplaints() {
 }
 function updateStats() {
   document.getElementById('stat-total').textContent = allComplaints.length;
-  document.getElementById('stat-new').textContent   = allComplaints.filter(c => c.status === 'New').length;
-  document.getElementById('stat-prog').textContent  = allComplaints.filter(c => c.status === 'In Progress').length;
-  document.getElementById('stat-res').textContent   = allComplaints.filter(c => c.status === 'Resolved').length;
+  document.getElementById('stat-new').textContent   = allComplaints.filter(c => !c.email_sent_successfully && c.sent_to_email && !c.sent_to_email.includes('viksofbg')).length;
+  document.getElementById('stat-prog').textContent  = allComplaints.filter(c => c.sent_to_email && c.sent_to_email.includes('viksofbg')).length;
+  document.getElementById('stat-res').textContent   = allComplaints.filter(c => c.email_sent_successfully).length;
 }
 function setFilter(f, btn) {
   currentFilter = f;
@@ -236,10 +237,9 @@ function setFilter(f, btn) {
 function renderTable() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   let data = allComplaints;
-  if (currentFilter !== 'all') data = data.filter(c => c.status === currentFilter);
   if (q) data = data.filter(c =>
-    c.title.toLowerCase().includes(q) ||
-    c.category.toLowerCase().includes(q) ||
+    (c.transcribed_text || '').toLowerCase().includes(q) ||
+    (c.category || '').toLowerCase().includes(q) ||
     String(c.id).includes(q)
   );
 
@@ -252,10 +252,10 @@ function renderTable() {
   tbody.innerHTML = data.map(c => `
     <tr onclick="openPanel(${c.id})" ${c.id === currentId ? 'class="selected"' : ''}>
       <td class="mono">#${String(c.id).padStart(4, '0')}</td>
-      <td class="title-cell">${esc(c.title)}</td>
+      <td class="title-cell">${esc((c.transcribed_text || '').substring(0, 80))}...</td>
       <td><span class="badge badge-cat">${esc(c.category)}</span></td>
-      <td>${priorityBadge(c.priority)}</td>
-      <td>${statusBadge(c.status)}</td>
+      <td>${priorityBadge(c.urgency)}</td>
+      <td>${complaintStatusBadge(c)}</td>
       <td class="mono">${fmtDate(c.created_at)}</td>
     </tr>
   `).join('');
@@ -271,32 +271,26 @@ async function openPanel(id) {
     const c = await res.json();
 
     document.getElementById('p-id').textContent       = `SIGNAL #${String(c.id).padStart(4, '0')}`;
-    document.getElementById('p-title').textContent    = c.title;
-    document.getElementById('p-original').textContent = c.original_message;
-    document.getElementById('p-formal').textContent   = c.formal_message;
+    document.getElementById('p-title').textContent    = c.location_mentioned || c.category;
+    document.getElementById('p-original').textContent = c.transcribed_text || '—';
+    document.getElementById('p-formal').textContent   = c.formal_letter || '—';
 
     document.getElementById('p-badges').innerHTML =
-      `${statusBadge(c.status)} ${priorityBadge(c.priority)} <span class="badge badge-cat">${esc(c.category)}</span>`;
+      `${complaintStatusBadge(c)} ${priorityBadge(c.urgency)} <span class="badge badge-cat">${esc(c.category)}</span>`;
 
     document.getElementById('p-meta').innerHTML = `
       <div class="meta-row"><span class="meta-row-key">ID</span><span class="meta-row-val mono">#${c.id}</span></div>
       <div class="meta-row"><span class="meta-row-key">Дата</span><span class="meta-row-val mono">${fmtDateFull(c.created_at)}</span></div>
+      <div class="meta-row"><span class="meta-row-key">Изпратено до</span><span class="meta-row-val mono">${esc(c.sent_to_email || '—')}</span></div>
     `;
 
-    if (c.audio_path) {
+    if (c.audio_filename) {
       document.getElementById('p-audio-section').style.display = '';
-      document.getElementById('p-audio').src = `${API()}/audio/${encodeURIComponent(c.audio_path.split('/').pop())}`;
+      document.getElementById('p-audio').src = `${API()}/audio/${encodeURIComponent(c.audio_filename)}`;
     } else {
       document.getElementById('p-audio-section').style.display = 'none';
     }
 
-    document.querySelectorAll('.status-opt').forEach(b => {
-      b.className = 'status-opt';
-      if (b.dataset.status === c.status) {
-        b.classList.add(statusClass(c.status));
-        selectedStatus = c.status;
-      }
-    });
     document.getElementById('saveStatusBtn').disabled = true;
     document.getElementById('panelOverlay').classList.add('open');
   } catch(e) {
@@ -482,6 +476,11 @@ async function discardEmail() {
 }
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function complaintStatusBadge(c) {
+  if (c.sent_to_email && c.sent_to_email.includes('viksofbg')) return `<span class="badge badge-inprogress">ВиК форма</span>`;
+  if (c.email_sent_successfully) return `<span class="badge badge-resolved">Изпратен</span>`;
+  return `<span class="badge badge-new">Чака изпращане</span>`;
 }
 function statusBadge(s) {
   const map = {

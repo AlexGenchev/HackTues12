@@ -3,6 +3,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def send_complaint_email(to_email: str, subject: str, body: str, category: str, urgency: str) -> bool:
+    test_email = os.getenv("TEST_EMAIL")
+    if test_email:
+        to_email = test_email
     host, port = os.getenv("EMAIL_SMTP_HOST", "smtp.gmail.com"), int(os.getenv("EMAIL_SMTP_PORT", "587"))
     sender, pwd = os.getenv("EMAIL_SENDER"), os.getenv("EMAIL_PASSWORD")
     if not sender or not pwd: return False
